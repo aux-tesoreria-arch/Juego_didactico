@@ -1,9 +1,10 @@
 # Build Stage for Frontend
-FROM node:18-alpine AS frontend-builder
+FROM node:18-slim AS frontend-builder
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ ./
+RUN chmod -R +x node_modules/.bin
 RUN npm run build
 
 # Production Stage
