@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: acuasan
+    runtime: docker
+    envVars:
+      - key: PORT
+        value: 8000
+    # disk: # Uncomment if using a paid plan for persistence
+    #   name: acuasan-data
+    #   mountPath: /app/backend/data
+    #   sizeGB: 1
