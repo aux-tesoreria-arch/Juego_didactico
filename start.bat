@@ -1,6 +1,6 @@
 @echo off
 echo ==========================================
-echo    Accua Game - Iniciando...
+echo    Acuasan - Iniciando...
 echo ==========================================
 pause
 
@@ -37,7 +37,7 @@ cd ..
 if exist "backend\static" rmdir /s /q "backend\static"
 move "frontend\dist" "backend\static"
 
-echo [4/4] Iniciando Accua Game...
+echo [4/4] Iniciando Acuasan...
 echo URL: http://localhost:8000
 echo (Si esa no funciona, prueba: http://127.0.0.1:8000)
 call backend\venv\Scripts\activate

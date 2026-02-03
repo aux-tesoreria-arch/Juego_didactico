@@ -124,12 +124,12 @@ function App() {
     fetchHistory();
   }
 
-  if (loading) return <div className="app-container">Cargando Accua Game...</div>
+  if (loading) return <div className="app-container">Cargando Acuasan...</div>
 
   return (
     <div className="app-container">
       <div className="header-section">
-        <h1 className="title-glow">💧 Accua Game 🎡</h1>
+        <h1 className="title-glow">💧 Acuasan 🎡</h1>
         <p className="subtitle">Asignación para el Compartir Semanal</p>
       </div>
 

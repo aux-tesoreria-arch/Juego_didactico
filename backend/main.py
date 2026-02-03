@@ -9,7 +9,7 @@ import os
 
 import json
 
-app = FastAPI(title="Accua Game API")
+app = FastAPI(title="Acuasan API")
 
 # Configure CORS
 app.add_middleware(

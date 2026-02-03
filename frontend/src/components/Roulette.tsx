@@ -42,7 +42,7 @@ const Roulette: React.FC<RouletteProps> = ({ participants, onSpinEnd, isSpinning
     const colors = ['#3b82f6', '#60a5fa', '#93c5fd', '#2563eb', '#1d4ed8', '#1e40af'];
     const displayParticipants = participants.length > 0 ? participants : [
         { name: 'Esperando...', email: '' },
-        { name: 'Accua Game', email: '' },
+        { name: 'Acuasan', email: '' },
         { name: 'Añadir...', email: '' }
     ];
 
