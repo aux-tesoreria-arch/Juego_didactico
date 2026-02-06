@@ -139,19 +139,30 @@ function App() {
 
   const startFoodRain = () => {
     const foodEmojis = ['🍎', '🍕', '🍔', '🍟', '🍩', '🍦', '🍇', '🍉', '🍗', '🍜', '🍱', '🍤', '🥞', '🥐'];
-    const newRain = Array.from({ length: 50 }).map((_, i) => {
-      // Distribuir progresivamente: las primeras caen primero, las últimas después
-      const progressDelay = (i / 50) * 4; // De 0 a 4 segundos progresivamente
-      const randomVariation = Math.random() * 0.5; // Variación aleatoria de 0-0.5s
-      return {
-        id: i,
+    setFoodRain([]);
+    
+    // Agregar comidas progresivamente cada 100ms
+    let count = 0;
+    const maxFood = 40;
+    const interval = setInterval(() => {
+      if (count >= maxFood) {
+        clearInterval(interval);
+        // Limpiar después de 4 segundos
+        setTimeout(() => setFoodRain([]), 4000);
+        return;
+      }
+      
+      const newItem = {
+        id: Date.now() + count,
         emoji: foodEmojis[Math.floor(Math.random() * foodEmojis.length)],
         left: `${Math.random() * 100}%`,
-        duration: `${2 + Math.random() * 2}s`,
-        delay: `${progressDelay + randomVariation}s`
+        duration: `${1.5 + Math.random() * 1}s`, // Más rápido: 1.5-2.5s
+        delay: '0s'
       };
-    });
-    setFoodRain(newRain);
+      
+      setFoodRain(prev => [...prev, newItem]);
+      count++;
+    }, 80); // Nueva comida cada 80ms
   }
 
   const handleSpinEnd = (selected: Participant) => {

@@ -217,26 +217,19 @@ h1 {
 
 .food-item {
   position: absolute;
-  font-size: 3.5rem;
+  font-size: 3rem;
   animation: fallDown linear forwards;
+  top: -50px;
 }
 
 @keyframes fallDown {
   0% {
-    transform: translateY(-100px) rotate(0deg);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  90% {
+    transform: translateY(0) rotate(0deg);
     opacity: 1;
   }
 
   100% {
-    transform: translateY(110vh) rotate(720deg);
+    transform: translateY(110vh) rotate(360deg);
     opacity: 0;
   }
 }
