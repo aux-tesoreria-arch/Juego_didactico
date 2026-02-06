@@ -67,21 +67,23 @@ const Roulette: React.FC<RouletteProps> = ({ participants, onSpinEnd, isSpinning
                     {displayParticipants.length === 1 ? (
                         <g>
                             <circle cx="50" cy="50" r="50" fill={colors[0]} />
-                            <text
-                                x="50"
-                                y="50"
-                                fill="black"
-                                fontSize="4.5"
-                                fontWeight="900"
-                                textAnchor="middle"
-                                alignmentBaseline="middle"
-                                style={{
-                                    letterSpacing: '0.1px',
-                                    pointerEvents: 'none'
-                                }}
-                            >
-                                {displayParticipants[0].name}
-                            </text>
+                            <g transform={`rotate(${-rotation % 360}, 50, 50)`}>
+                                <text
+                                    x="50"
+                                    y="15"
+                                    fill="white"
+                                    fontSize="5"
+                                    fontWeight="900"
+                                    textAnchor="middle"
+                                    alignmentBaseline="middle"
+                                    style={{
+                                        letterSpacing: '0.5px',
+                                        pointerEvents: 'none'
+                                    }}
+                                >
+                                    {displayParticipants[0].name.length > 8 ? displayParticipants[0].name.slice(0, 8) + '...' : displayParticipants[0].name}
+                                </text>
+                            </g>
                         </g>
                     ) : (
                         displayParticipants.map((person, index) => {
@@ -110,11 +112,11 @@ const Roulette: React.FC<RouletteProps> = ({ participants, onSpinEnd, isSpinning
                                         strokeWidth="0.5"
                                         style={{ opacity: participants.length === 0 ? 0.3 : 1 }}
                                     />
-                                    <text
+                            <text
                                         x={labelX}
                                         y={labelY}
                                         fill="black"
-                                        fontSize="4.5"
+                                        fontSize={Math.max(2.5, Math.min(4.5, 30 / Math.max(6, displayParticipants.length)))}
                                         fontWeight="900"
                                         textAnchor="middle"
                                         alignmentBaseline="middle"
@@ -124,7 +126,7 @@ const Roulette: React.FC<RouletteProps> = ({ participants, onSpinEnd, isSpinning
                                             pointerEvents: 'none'
                                         }}
                                     >
-                                        {person.name}
+                                        {person.name.length > 10 ? person.name.slice(0, 10) + '...' : person.name}
                                     </text>
                                 </g>
                             );

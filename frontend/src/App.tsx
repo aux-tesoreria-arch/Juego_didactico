@@ -15,6 +15,23 @@ function App() {
   const [newName, setNewName] = useState('')
   const [targetIndex, setTargetIndex] = useState<number | null>(null)
   const [foodRain, setFoodRain] = useState<{ id: number, emoji: string, left: string, duration: string, delay: string }[]>([])
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    confirmText: string;
+    cancelText: string;
+    isDestructive: boolean;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    confirmText: 'Confirmar',
+    cancelText: 'Cancelar',
+    isDestructive: false
+  })
 
   const fetchParticipants = () => {
     fetch('/api/participants')
@@ -67,17 +84,35 @@ function App() {
   }
 
   const handleDeleteParticipant = (name: string) => {
-    if (window.confirm(`¿Seguro que quieres eliminar a ${name}?`)) {
-      fetch(`/api/participants/${encodeURIComponent(name)}`, { method: 'DELETE' })
-        .then(() => fetchParticipants())
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Eliminar Participante',
+      message: `¿Seguro que quieres eliminar a ${name}?`,
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      isDestructive: true,
+      onConfirm: () => {
+        fetch(`/api/participants/${encodeURIComponent(name)}`, { method: 'DELETE' })
+          .then(() => fetchParticipants())
+        setConfirmModal(prev => ({ ...prev, isOpen: false }))
+      }
+    })
   }
 
   const handleClearHistory = () => {
-    if (window.confirm("¿Seguro que quieres borrar todo el historial?")) {
-      fetch('/api/history', { method: 'DELETE' })
-        .then(() => fetchHistory())
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: 'Borrar Historial',
+      message: '¿Seguro que quieres borrar todo el historial? Esta acción no se puede deshacer.',
+      confirmText: 'Borrar',
+      cancelText: 'Cancelar',
+      isDestructive: true,
+      onConfirm: () => {
+        fetch('/api/history', { method: 'DELETE' })
+          .then(() => fetchHistory())
+        setConfirmModal(prev => ({ ...prev, isOpen: false }))
+      }
+    })
   }
 
   const handleSpin = () => {
@@ -104,13 +139,18 @@ function App() {
 
   const startFoodRain = () => {
     const foodEmojis = ['🍎', '🍕', '🍔', '🍟', '🍩', '🍦', '🍇', '🍉', '🍗', '🍜', '🍱', '🍤', '🥞', '🥐'];
-    const newRain = Array.from({ length: 40 }).map((_, i) => ({
-      id: i,
-      emoji: foodEmojis[Math.floor(Math.random() * foodEmojis.length)],
-      left: `${Math.random() * 100}%`,
-      duration: `${2 + Math.random() * 3}s`,
-      delay: `${Math.random() * 2}s`
-    }));
+    const newRain = Array.from({ length: 50 }).map((_, i) => {
+      // Distribuir progresivamente: las primeras caen primero, las últimas después
+      const progressDelay = (i / 50) * 4; // De 0 a 4 segundos progresivamente
+      const randomVariation = Math.random() * 0.5; // Variación aleatoria de 0-0.5s
+      return {
+        id: i,
+        emoji: foodEmojis[Math.floor(Math.random() * foodEmojis.length)],
+        left: `${Math.random() * 100}%`,
+        duration: `${2 + Math.random() * 2}s`,
+        delay: `${progressDelay + randomVariation}s`
+      };
+    });
     setFoodRain(newRain);
   }
 
@@ -175,7 +215,7 @@ function App() {
               Lista Aktiva ({participants.length}):
             </div>
             <ul className="participant-list">
-              {participants.map(p => (
+              {[...participants].reverse().map(p => (
                 <li key={p.name} className="participant-item">
                   <span style={{ fontWeight: 600, fontSize: '1rem' }}>{p.name}</span>
                   <button className="delete-btn" onClick={() => handleDeleteParticipant(p.name)}>🗑️</button>
@@ -212,7 +252,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {history.map((entry, idx) => (
+              {[...history].reverse().map((entry, idx) => (
                 <tr key={idx}>
                   <td><span className="week-badge">{entry.week}</span></td>
                   <td>{entry.date}</td>
@@ -272,6 +312,30 @@ function App() {
               <div className="winner-email-info">¡A disfrutar de ese compartir! 🍲✨</div>
               <button className="spin-button" style={{ marginTop: '2rem' }} onClick={() => setWinner(null)}>
                 ¡Genial!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div className="confirm-overlay" onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}>
+          <div className="confirm-modal" onClick={e => e.stopPropagation()}>
+            <h3 className="confirm-title">{confirmModal.title}</h3>
+            <p className="confirm-message">{confirmModal.message}</p>
+            <div className="confirm-buttons">
+              <button 
+                className="confirm-btn cancel"
+                onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+              >
+                {confirmModal.cancelText}
+              </button>
+              <button 
+                className={`confirm-btn ${confirmModal.isDestructive ? 'destructive' : 'primary'}`}
+                onClick={confirmModal.onConfirm}
+              >
+                {confirmModal.confirmText}
               </button>
             </div>
           </div>
